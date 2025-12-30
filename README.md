@@ -99,3 +99,37 @@ pub fn main() !void {
 ```
 
 And run it with `zig build run`.
+
+## Call Zig function from mruby
+
+Here is an example. Add it into `src/root.zig`:
+
+```
+export fn zig_add(mrb: ?*c.mrb_state, self:c.mrb_value) c.mrb_value {
+    _ = self;
+    var a: c.mrb_int = 0;
+    var b: c.mrb_int = 0;
+
+    _ = c.mrb_get_args(mrb, "ii", &a, &b);
+    return c.mrb_fixnum_value(a+b);
+}
+
+pub fn registerFunctions(mrb: *c.mrb_state) void {
+    const kernel = mrb.kernel_module;
+    c.mrb_define_method(
+        mrb,
+        kernel,
+        "zig_add",
+        zig_add,
+        c.MRB_ARGS_REQ(2),
+    );
+}
+```
+
+From `main.zig`, call `registerFunction()` to register the function so that mruby can find it.
+
+In mruby, run `zig_add(3,4)` will work.
+
+## Call mruby from Zig
+
+Just use mruby C API.

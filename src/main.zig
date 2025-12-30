@@ -1,6 +1,6 @@
 const std = @import("std");
 const mrubyOnZig = @import("mrubyOnZig");
-const c = @import("mruby_h.zig");
+const c = mrubyOnZig.c;
 
 export var edata: u8 = 0;
 export var end: u8 = 0;
@@ -8,8 +8,11 @@ export var etext: u8 = 0;
 
 pub fn main() !void {
     const mrb = c.mrb_open();
-    _ = c.mrb_load_irep(mrb, c.rb_main);
-    defer c.mrb_close(mrb);
+    if (mrb) |m| {
+        mrubyOnZig.registerFunctions(m);
+        _ = c.mrb_load_irep(m, c.rb_main);
+        defer c.mrb_close(m);
+    }
     // Prints to stderr, ignoring potential errors.
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
     try mrubyOnZig.bufferedPrint();
