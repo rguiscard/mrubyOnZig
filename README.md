@@ -34,7 +34,7 @@ $ zig translate-c -lc -I mruby-3.4.0/build/host/include mruby_headers.h > src/mr
 
 ### 3. Fix opaque error
 
-Based on [mruby.zig](https://github.com/jethrodaniel/mruby.zig), you need to change this line:
+Based on [mruby.zig](https://github.com/jethrodaniel/mruby.zig), you need to change this line of generated `src/mruby_h.zig` from:
 
 ```
     gc: mrb_gc = @import("std").mem.zeroes(mrb_gc),
@@ -46,7 +46,7 @@ to this one:
     gc: u128 = @import("std").mem.zeroes(u128),
 ```
 
-### 4. Use build.zig to convert mruby file to bytecode in C
+### 4. Use build.zig to convert mruby file to bytecode in C automatically
 
 Assuming there is a mruby file at `src/main.rb`. Add this in `build.zig`
 
