@@ -15,6 +15,49 @@ pub fn bufferedPrint() !void {
     try stdout.flush(); // Don't forget to flush!
 }
 
+export fn zig_ping(mrb: ?*c.mrb_state, self:c.mrb_value) c.mrb_value {
+    _ = self;
+
+    var str: c.mrb_value = undefined;
+    _ = c.mrb_get_args(mrb, "S", &str);
+
+    const cstr = c.mrb_str_to_cstr(mrb, str);
+    const bytes: []const u8 = std.mem.span(cstr);
+    std.debug.print("ip: {s}\n", .{bytes});
+
+    var gpa = std.heap.DebugAllocator(.{}){};
+    const allocator = gpa.allocator();
+    defer _ = gpa.deinit();
+
+    var body = std.Io.Writer.Allocating.init(allocator);
+    const bodywriter: *std.Io.Writer = &body.writer;
+    defer body.deinit();
+
+    if (std.Uri.parse(bytes)) |uri| {
+        var client = std.http.Client{ .allocator = allocator };
+        defer client.deinit();
+
+        if (client.fetch(.{ 
+            .method = .GET,
+            .location = .{ .uri = uri },
+            .response_writer = bodywriter,
+        })) |response| {
+            std.debug.print("got code {}\n", .{response.status});
+            if (response.status != .ok) {
+//                @panic("oh no...");
+            } else {
+//                std.debug.print("{s}\n", .{body.written()});
+                return c.mrb_true_value();
+            }
+        } else |_| {
+            std.debug.print("Fetch URI error: {s}\n", .{bytes});
+        }
+    } else |_| {
+        std.debug.print("Parse URI error: {s}\n", .{bytes});
+    }
+    return c.mrb_false_value();
+}
+
 export fn zig_add(mrb: ?*c.mrb_state, self:c.mrb_value) c.mrb_value {
     _ = self;
     var a: c.mrb_int = 0;
@@ -32,6 +75,13 @@ pub fn registerFunctions(mrb: *c.mrb_state) void {
         "zig_add",
         zig_add,
         c.MRB_ARGS_REQ(2),
+    );
+    c.mrb_define_method(
+        mrb,
+        kernel,
+        "zig_ping",
+        zig_ping,
+        c.MRB_ARGS_REQ(1),
     );
 }
 

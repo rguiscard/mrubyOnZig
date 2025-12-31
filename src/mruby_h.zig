@@ -628,6 +628,7 @@ pub const struct_RProc = opaque {};
 pub const MRB_TYPEOF_MRB_TT_PROC = struct_RProc;
 pub const struct_RArray = opaque {};
 pub const MRB_TYPEOF_MRB_TT_ARRAY = struct_RArray;
+// mruby-3.4.0/build/host/include/mruby/object.h:13:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_RString = opaque {};
 pub const MRB_TYPEOF_MRB_TT_STRING = struct_RString;
 pub const struct_RRange = opaque {};
@@ -1647,6 +1648,34 @@ pub const struct_mrb_insn_data = extern struct {
 pub extern fn mrb_irep_incref(?*mrb_state, [*c]struct_mrb_irep) void;
 pub extern fn mrb_irep_decref(?*mrb_state, [*c]struct_mrb_irep) void;
 pub extern fn mrb_irep_cutref(?*mrb_state, [*c]struct_mrb_irep) void;
+pub const mrb_digitmap: [*c]const u8 = @extern([*c]const u8, .{
+    .name = "mrb_digitmap",
+});
+// mruby-3.4.0/build/host/include/mruby/object.h:13:18: warning: struct demoted to opaque type - has bitfield
+pub const struct_RStringEmbed = opaque {};
+pub extern fn mrb_str_modify(mrb: ?*mrb_state, s: ?*struct_RString) void;
+pub extern fn mrb_str_modify_keep_ascii(mrb: ?*mrb_state, s: ?*struct_RString) void;
+pub extern fn mrb_str_index(mrb: ?*mrb_state, str: mrb_value, p: [*c]const u8, len: mrb_int, offset: mrb_int) mrb_int;
+pub extern fn mrb_str_concat(mrb: ?*mrb_state, self: mrb_value, other: mrb_value) void;
+pub extern fn mrb_str_plus(mrb: ?*mrb_state, a: mrb_value, b: mrb_value) mrb_value;
+pub extern fn mrb_ptr_to_str(mrb: ?*mrb_state, p: ?*anyopaque) mrb_value;
+pub extern fn mrb_obj_as_string(mrb: ?*mrb_state, obj: mrb_value) mrb_value;
+pub extern fn mrb_str_resize(mrb: ?*mrb_state, str: mrb_value, len: mrb_int) mrb_value;
+pub extern fn mrb_str_substr(mrb: ?*mrb_state, str: mrb_value, beg: mrb_int, len: mrb_int) mrb_value;
+pub extern fn mrb_str_new_capa(mrb: ?*mrb_state, capa: mrb_int) mrb_value;
+pub extern fn mrb_string_cstr(mrb: ?*mrb_state, str: mrb_value) [*c]const u8;
+pub extern fn mrb_string_value_cstr(mrb: ?*mrb_state, str: [*c]mrb_value) [*c]const u8;
+pub extern fn mrb_str_dup(mrb: ?*mrb_state, str: mrb_value) mrb_value;
+pub extern fn mrb_str_intern(mrb: ?*mrb_state, self: mrb_value) mrb_value;
+pub extern fn mrb_str_to_integer(mrb: ?*mrb_state, str: mrb_value, base: mrb_int, badcheck: mrb_bool) mrb_value;
+pub extern fn mrb_str_to_dbl(mrb: ?*mrb_state, str: mrb_value, badcheck: mrb_bool) f64;
+pub extern fn mrb_str_equal(mrb: ?*mrb_state, str1: mrb_value, str2: mrb_value) mrb_bool;
+pub extern fn mrb_str_cat(mrb: ?*mrb_state, str: mrb_value, ptr: [*c]const u8, len: usize) mrb_value;
+pub extern fn mrb_str_cat_cstr(mrb: ?*mrb_state, str: mrb_value, ptr: [*c]const u8) mrb_value;
+pub extern fn mrb_str_cat_str(mrb: ?*mrb_state, str: mrb_value, str2: mrb_value) mrb_value;
+pub extern fn mrb_str_append(mrb: ?*mrb_state, str: mrb_value, str2: mrb_value) mrb_value;
+pub extern fn mrb_str_cmp(mrb: ?*mrb_state, str1: mrb_value, str2: mrb_value) c_int;
+pub extern fn mrb_str_to_cstr(mrb: ?*mrb_state, str: mrb_value) [*c]u8;
 pub const rb_main: [*c]u8 = @extern([*c]u8, .{
     .name = "rb_main",
 });
@@ -4121,8 +4150,11 @@ pub inline fn mrb_to_str(mrb: anytype, str: anytype) @TypeOf(mrb_ensure_string_t
     _ = &str;
     return mrb_ensure_string_type(mrb, str);
 }
-pub const mrb_str_to_str = @compileError("unable to translate macro: undefined identifier `mrb_obj_as_string`");
-// mruby-3.4.0/build/host/include/mruby.h:1447:9
+pub inline fn mrb_str_to_str(mrb: anytype, str: anytype) @TypeOf(mrb_obj_as_string(mrb, str)) {
+    _ = &mrb;
+    _ = &str;
+    return mrb_obj_as_string(mrb, str);
+}
 pub inline fn mrb_as_int(mrb: anytype, val: anytype) @TypeOf(mrb_integer(mrb_ensure_int_type(mrb, val))) {
     _ = &mrb;
     _ = &val;
@@ -4172,6 +4204,182 @@ pub const mrb_irep_catch_handler_pack = @compileError("unable to translate macro
 // mruby-3.4.0/build/host/include/mruby/irep.h:133:9
 pub const mrb_irep_catch_handler_unpack = @compileError("unable to translate macro: undefined identifier `bin_to_uint32`");
 // mruby-3.4.0/build/host/include/mruby/irep.h:134:9
+pub const MRUBY_STRING_H = "";
+pub const RSTRING_EMBED_LEN_MAX = @import("std").zig.c_translation.cast(mrb_int, (((@import("std").zig.c_translation.sizeof(?*anyopaque) * @as(c_int, 3)) + @import("std").zig.c_translation.sizeof(?*anyopaque)) - @import("std").zig.c_translation.MacroArithmetic.div(@as(c_int, 32), CHAR_BIT)) - @as(c_int, 1));
+pub const RSTR_SET_TYPE = @compileError("unable to translate macro: undefined identifier `MRB_STR_`");
+// mruby-3.4.0/build/host/include/mruby/string.h:41:9
+pub const MRB_STR_NORMAL = @as(c_int, 0);
+pub const MRB_STR_SHARED = @as(c_int, 1);
+pub const MRB_STR_FSHARED = @as(c_int, 2);
+pub const MRB_STR_NOFREE = @as(c_int, 4);
+pub const MRB_STR_EMBED = @as(c_int, 8);
+pub const MRB_STR_TYPE_MASK = @as(c_int, 15);
+pub const MRB_STR_EMBED_LEN_SHIFT = @as(c_int, 6);
+pub const MRB_STR_EMBED_LEN_BITS = @as(c_int, 5);
+pub const MRB_STR_EMBED_LEN_MASK = ((@as(c_int, 1) << MRB_STR_EMBED_LEN_BITS) - @as(c_int, 1)) << MRB_STR_EMBED_LEN_SHIFT;
+pub const MRB_STR_BINARY = @as(c_int, 16);
+pub const MRB_STR_SINGLE_BYTE = @as(c_int, 32);
+pub const MRB_STR_STATE_MASK = @as(c_int, 48);
+pub inline fn RSTR_EMBED_P(s: anytype) @TypeOf(s.*.flags & MRB_STR_EMBED) {
+    _ = &s;
+    return s.*.flags & MRB_STR_EMBED;
+}
+pub const RSTR_SET_EMBED_FLAG = @compileError("unable to translate C expr: expected ')' instead got '|='");
+// mruby-3.4.0/build/host/include/mruby/string.h:59:9
+pub const RSTR_SET_EMBED_LEN = @compileError("unable to translate macro: undefined identifier `tmp_n`");
+// mruby-3.4.0/build/host/include/mruby/string.h:60:9
+pub const RSTR_SET_LEN = @compileError("unable to translate C expr: unexpected token 'do'");
+// mruby-3.4.0/build/host/include/mruby/string.h:65:9
+pub inline fn RSTR_EMBED_PTR(s: anytype) @TypeOf(@import("std").zig.c_translation.cast([*c]struct_RStringEmbed, s).*.ary) {
+    _ = &s;
+    return @import("std").zig.c_translation.cast([*c]struct_RStringEmbed, s).*.ary;
+}
+pub inline fn RSTR_EMBED_LEN(s: anytype) mrb_int {
+    _ = &s;
+    return @import("std").zig.c_translation.cast(mrb_int, (s.*.flags & MRB_STR_EMBED_LEN_MASK) >> MRB_STR_EMBED_LEN_SHIFT);
+}
+pub inline fn RSTR_EMBEDDABLE_P(len: anytype) @TypeOf(len <= RSTRING_EMBED_LEN_MAX) {
+    _ = &len;
+    return len <= RSTRING_EMBED_LEN_MAX;
+}
+pub inline fn RSTR_PTR(s: anytype) @TypeOf(if (RSTR_EMBED_P(s) != 0) RSTR_EMBED_PTR(s) else s.*.as.heap.ptr) {
+    _ = &s;
+    return if (RSTR_EMBED_P(s) != 0) RSTR_EMBED_PTR(s) else s.*.as.heap.ptr;
+}
+pub inline fn RSTR_LEN(s: anytype) @TypeOf(if (RSTR_EMBED_P(s) != 0) RSTR_EMBED_LEN(s) else s.*.as.heap.len) {
+    _ = &s;
+    return if (RSTR_EMBED_P(s) != 0) RSTR_EMBED_LEN(s) else s.*.as.heap.len;
+}
+pub inline fn RSTR_CAPA(s: anytype) @TypeOf(if (RSTR_EMBED_P(s) != 0) RSTRING_EMBED_LEN_MAX else s.*.as.heap.aux.capa) {
+    _ = &s;
+    return if (RSTR_EMBED_P(s) != 0) RSTRING_EMBED_LEN_MAX else s.*.as.heap.aux.capa;
+}
+pub inline fn RSTR_SHARED_P(s: anytype) @TypeOf(s.*.flags & MRB_STR_SHARED) {
+    _ = &s;
+    return s.*.flags & MRB_STR_SHARED;
+}
+pub inline fn RSTR_FSHARED_P(s: anytype) @TypeOf(s.*.flags & MRB_STR_FSHARED) {
+    _ = &s;
+    return s.*.flags & MRB_STR_FSHARED;
+}
+pub inline fn RSTR_NOFREE_P(s: anytype) @TypeOf(s.*.flags & MRB_STR_NOFREE) {
+    _ = &s;
+    return s.*.flags & MRB_STR_NOFREE;
+}
+pub inline fn RSTR_SINGLE_BYTE_P(s: anytype) @TypeOf(TRUE) {
+    _ = &s;
+    return TRUE;
+}
+pub inline fn RSTR_SET_SINGLE_BYTE_FLAG(s: anytype) anyopaque {
+    _ = &s;
+    return @import("std").zig.c_translation.cast(anyopaque, @as(c_int, 0));
+}
+pub inline fn RSTR_UNSET_SINGLE_BYTE_FLAG(s: anytype) anyopaque {
+    _ = &s;
+    return @import("std").zig.c_translation.cast(anyopaque, @as(c_int, 0));
+}
+pub inline fn RSTR_WRITE_SINGLE_BYTE_FLAG(s: anytype, v: anytype) anyopaque {
+    _ = &s;
+    _ = &v;
+    return @import("std").zig.c_translation.cast(anyopaque, @as(c_int, 0));
+}
+pub inline fn RSTR_COPY_SINGLE_BYTE_FLAG(dst: anytype, src: anytype) anyopaque {
+    _ = &dst;
+    _ = &src;
+    return @import("std").zig.c_translation.cast(anyopaque, @as(c_int, 0));
+}
+pub inline fn RSTR_SET_ASCII_FLAG(s: anytype) @TypeOf(RSTR_SET_SINGLE_BYTE_FLAG(s)) {
+    _ = &s;
+    return RSTR_SET_SINGLE_BYTE_FLAG(s);
+}
+pub inline fn RSTR_BINARY_P(s: anytype) @TypeOf(s.*.flags & MRB_STR_BINARY) {
+    _ = &s;
+    return s.*.flags & MRB_STR_BINARY;
+}
+pub inline fn mrb_str_ptr(s: anytype) [*c]struct_RString {
+    _ = &s;
+    return @import("std").zig.c_translation.cast([*c]struct_RString, mrb_ptr(s));
+}
+pub inline fn RSTRING(s: anytype) @TypeOf(mrb_str_ptr(s)) {
+    _ = &s;
+    return mrb_str_ptr(s);
+}
+pub inline fn RSTRING_PTR(s: anytype) @TypeOf(RSTR_PTR(RSTRING(s))) {
+    _ = &s;
+    return RSTR_PTR(RSTRING(s));
+}
+pub inline fn RSTRING_EMBED_LEN(s: anytype) @TypeOf(RSTR_EMBED_LEN(RSTRING(s))) {
+    _ = &s;
+    return RSTR_EMBED_LEN(RSTRING(s));
+}
+pub inline fn RSTRING_LEN(s: anytype) @TypeOf(RSTR_LEN(RSTRING(s))) {
+    _ = &s;
+    return RSTR_LEN(RSTRING(s));
+}
+pub inline fn RSTRING_CAPA(s: anytype) @TypeOf(RSTR_CAPA(RSTRING(s))) {
+    _ = &s;
+    return RSTR_CAPA(RSTRING(s));
+}
+pub inline fn RSTRING_END(s: anytype) @TypeOf(RSTRING_PTR(s) + RSTRING_LEN(s)) {
+    _ = &s;
+    return RSTRING_PTR(s) + RSTRING_LEN(s);
+}
+pub inline fn RSTRING_CSTR(mrb: anytype, s: anytype) @TypeOf(mrb_string_cstr(mrb, s)) {
+    _ = &mrb;
+    _ = &s;
+    return mrb_string_cstr(mrb, s);
+}
+pub const mrb_str_index_lit = @compileError("unable to translate C expr: unexpected token ';'");
+// mruby-3.4.0/build/host/include/mruby/string.h:122:9
+pub inline fn mrb_str_buf_new(mrb: anytype, capa: anytype) @TypeOf(mrb_str_new_capa(mrb, capa)) {
+    _ = &mrb;
+    _ = &capa;
+    return mrb_str_new_capa(mrb, capa);
+}
+pub inline fn mrb_string_value_ptr(mrb: anytype, str: anytype) @TypeOf(RSTRING_PTR(str)) {
+    _ = &mrb;
+    _ = &str;
+    return RSTRING_PTR(str);
+}
+pub inline fn mrb_string_value_len(mrb: anytype, str: anytype) @TypeOf(RSTRING_LEN(str)) {
+    _ = &mrb;
+    _ = &str;
+    return RSTRING_LEN(str);
+}
+pub const mrb_str_strlen = @compileError("unable to translate macro: undefined identifier `strlen`");
+// mruby-3.4.0/build/host/include/mruby/string.h:333:9
+pub inline fn mrb_str_to_inum(mrb: anytype, str: anytype, base: anytype, badcheck: anytype) @TypeOf(mrb_str_to_integer(mrb, str, base, badcheck)) {
+    _ = &mrb;
+    _ = &str;
+    _ = &base;
+    _ = &badcheck;
+    return mrb_str_to_integer(mrb, str, base, badcheck);
+}
+pub inline fn mrb_str_cat_lit(mrb: anytype, str: anytype, lit: anytype) @TypeOf(mrb_str_cat(mrb, str, lit, mrb_strlen_lit(lit))) {
+    _ = &mrb;
+    _ = &str;
+    _ = &lit;
+    return mrb_str_cat(mrb, str, lit, mrb_strlen_lit(lit));
+}
+pub inline fn mrb_str_cat2(mrb: anytype, str: anytype, ptr: anytype) @TypeOf(mrb_str_cat_cstr(mrb, str, ptr)) {
+    _ = &mrb;
+    _ = &str;
+    _ = &ptr;
+    return mrb_str_cat_cstr(mrb, str, ptr);
+}
+pub inline fn mrb_str_buf_cat(mrb: anytype, str: anytype, ptr: anytype, len: anytype) @TypeOf(mrb_str_cat(mrb, str, ptr, len)) {
+    _ = &mrb;
+    _ = &str;
+    _ = &ptr;
+    _ = &len;
+    return mrb_str_cat(mrb, str, ptr, len);
+}
+pub inline fn mrb_str_buf_append(mrb: anytype, str: anytype, str2: anytype) @TypeOf(mrb_str_cat_str(mrb, str, str2)) {
+    _ = &mrb;
+    _ = &str;
+    _ = &str2;
+    return mrb_str_cat_str(mrb, str, str2);
+}
 pub const _G_fpos_t = struct__G_fpos_t;
 pub const _G_fpos64_t = struct__G_fpos64_t;
 pub const _IO_marker = struct__IO_marker;
@@ -4221,3 +4429,4 @@ pub const irep_pool_type = enum_irep_pool_type;
 pub const mrb_catch_type = enum_mrb_catch_type;
 pub const mrb_irep_catch_handler = struct_mrb_irep_catch_handler;
 pub const mrb_insn_data = struct_mrb_insn_data;
+pub const RStringEmbed = struct_RStringEmbed;

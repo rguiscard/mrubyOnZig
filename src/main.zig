@@ -13,9 +13,6 @@ pub fn main() !void {
         _ = c.mrb_load_irep(m, c.rb_main);
         defer c.mrb_close(m);
     }
-    // Prints to stderr, ignoring potential errors.
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    try mrubyOnZig.bufferedPrint();
 }
 
 test "simple test" {

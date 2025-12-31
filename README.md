@@ -133,3 +133,11 @@ In mruby, run `zig_add(3,4)` will work.
 ## Call mruby from Zig
 
 Just use mruby C API.
+
+## Example: mruby fiber with zig http client function
+
+See `src/fiber_ping.rb` and `src/root.zig`.
+
+It uses mruby fiber for cooperative scheduling and call zig function which fetches a url as a way of pinging.
+If it fetches successfully, it will wait 5 seconds (not in real time) to ping (fetch) again.
+Otherwise, it will ping per second. It is just a dummy example that you can use mruby for neat logics and zig for io.
