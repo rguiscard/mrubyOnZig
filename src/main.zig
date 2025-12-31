@@ -11,8 +11,51 @@ pub fn main() !void {
     if (mrb) |m| {
         mrubyOnZig.registerFunctions(m);
         _ = c.mrb_load_irep(m, c.rb_main);
+
+        block_test(m);
+
+        monads_test(m);
+
         defer c.mrb_close(m);
     }
+}
+
+// MONADS TEST
+const MValue = struct {
+    value: c.mrb_value,
+
+    fn tap(self: *@This()) *@This() {
+        return self;
+    }
+
+    fn plus_one(self: *@This()) *@This() {
+        const v = c.mrb_fixnum(self.value);
+        self.value = c.mrb_fixnum_value(v+1);
+        return self;
+    }
+};
+
+fn monads_test(mrb: *c.mrb_state) void {
+    var one:MValue = .{.value = c.mrb_fixnum_value(1)};
+    const result = one.tap().plus_one();
+//    const result = one.tap();
+    std.debug.print("=== Monads test ===\n", .{});
+    _ = c.mrb_funcall(mrb, c.mrb_top_self(mrb), "puts", 1, result.value);
+}
+
+// BLOCK TEST
+export fn proc_func(mrb: ?*c.mrb_state, self: c.mrb_value) c.mrb_value {
+    _ = mrb;
+    _ = self;
+    return c.mrb_false_value();
+}
+
+fn block_test(mrb: *c.mrb_state) void {
+    const pfunc = c.mrb_proc_new_cfunc(mrb, proc_func);
+    const b = c.mrb_obj_value(pfunc);
+    const result = c.mrb_yield(mrb, b, c.mrb_nil_value());
+    std.debug.print("=== Block (Proc) test ===\n", .{});
+    _ = c.mrb_funcall(mrb, c.mrb_top_self(mrb), "puts", 1, result);
 }
 
 test "simple test" {

@@ -624,6 +624,7 @@ pub const MRB_TYPEOF_MRB_TT_CDATA = struct_RData;
 pub const struct_RException = opaque {};
 pub const MRB_TYPEOF_MRB_TT_EXCEPTION = struct_RException;
 pub const MRB_TYPEOF_MRB_TT_ICLASS = struct_RClass;
+// mruby-3.4.0/build/host/include/mruby/object.h:13:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_RProc = opaque {};
 pub const MRB_TYPEOF_MRB_TT_PROC = struct_RProc;
 pub const struct_RArray = opaque {};
@@ -633,6 +634,7 @@ pub const struct_RString = opaque {};
 pub const MRB_TYPEOF_MRB_TT_STRING = struct_RString;
 pub const struct_RRange = opaque {};
 pub const MRB_TYPEOF_MRB_TT_RANGE = struct_RRange;
+// mruby-3.4.0/build/host/include/mruby/object.h:13:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_REnv = opaque {};
 pub const MRB_TYPEOF_MRB_TT_ENV = struct_REnv;
 // mruby-3.4.0/build/host/include/mruby/object.h:13:18: warning: struct demoted to opaque type - has bitfield
@@ -1648,6 +1650,81 @@ pub const struct_mrb_insn_data = extern struct {
 pub extern fn mrb_irep_incref(?*mrb_state, [*c]struct_mrb_irep) void;
 pub extern fn mrb_irep_decref(?*mrb_state, [*c]struct_mrb_irep) void;
 pub extern fn mrb_irep_cutref(?*mrb_state, [*c]struct_mrb_irep) void;
+pub extern fn memcpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
+pub extern fn memmove(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
+pub extern fn memccpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn memset(__s: ?*anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn memcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong) c_int;
+pub extern fn __memcmpeq(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: usize) c_int;
+pub extern fn memchr(__s: ?*const anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn strcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn strncpy(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strcat(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn strncat(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strcmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strncmp(__s1: [*c]const u8, __s2: [*c]const u8, __n: c_ulong) c_int;
+pub extern fn strcoll(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strxfrm(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) c_ulong;
+pub const struct___locale_data_11 = opaque {};
+pub const struct___locale_struct = extern struct {
+    __locales: [13]?*struct___locale_data_11 = @import("std").mem.zeroes([13]?*struct___locale_data_11),
+    __ctype_b: [*c]const c_ushort = @import("std").mem.zeroes([*c]const c_ushort),
+    __ctype_tolower: [*c]const c_int = @import("std").mem.zeroes([*c]const c_int),
+    __ctype_toupper: [*c]const c_int = @import("std").mem.zeroes([*c]const c_int),
+    __names: [13][*c]const u8 = @import("std").mem.zeroes([13][*c]const u8),
+};
+pub const __locale_t = [*c]struct___locale_struct;
+pub const locale_t = __locale_t;
+pub extern fn strcoll_l(__s1: [*c]const u8, __s2: [*c]const u8, __l: locale_t) c_int;
+pub extern fn strxfrm_l(__dest: [*c]u8, __src: [*c]const u8, __n: usize, __l: locale_t) usize;
+pub extern fn strdup(__s: [*c]const u8) [*c]u8;
+pub extern fn strndup(__string: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strchr(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn strrchr(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn strcspn(__s: [*c]const u8, __reject: [*c]const u8) c_ulong;
+pub extern fn strspn(__s: [*c]const u8, __accept: [*c]const u8) c_ulong;
+pub extern fn strpbrk(__s: [*c]const u8, __accept: [*c]const u8) [*c]u8;
+pub extern fn strstr(__haystack: [*c]const u8, __needle: [*c]const u8) [*c]u8;
+pub extern fn strtok(__s: [*c]u8, __delim: [*c]const u8) [*c]u8;
+pub extern fn __strtok_r(noalias __s: [*c]u8, noalias __delim: [*c]const u8, noalias __save_ptr: [*c][*c]u8) [*c]u8;
+pub extern fn strtok_r(noalias __s: [*c]u8, noalias __delim: [*c]const u8, noalias __save_ptr: [*c][*c]u8) [*c]u8;
+pub extern fn strlen(__s: [*c]const u8) c_ulong;
+pub extern fn strnlen(__string: [*c]const u8, __maxlen: usize) usize;
+pub extern fn strerror(__errnum: c_int) [*c]u8;
+pub extern fn strerror_r(__errnum: c_int, __buf: [*c]u8, __buflen: usize) c_int;
+pub extern fn strerror_l(__errnum: c_int, __l: locale_t) [*c]u8;
+pub extern fn bcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong) c_int;
+pub extern fn bcopy(__src: ?*const anyopaque, __dest: ?*anyopaque, __n: c_ulong) void;
+pub extern fn bzero(__s: ?*anyopaque, __n: c_ulong) void;
+pub extern fn index(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn rindex(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn ffs(__i: c_int) c_int;
+pub extern fn ffsl(__l: c_long) c_int;
+pub extern fn ffsll(__ll: c_longlong) c_int;
+pub extern fn strcasecmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strncasecmp(__s1: [*c]const u8, __s2: [*c]const u8, __n: c_ulong) c_int;
+pub extern fn strcasecmp_l(__s1: [*c]const u8, __s2: [*c]const u8, __loc: locale_t) c_int;
+pub extern fn strncasecmp_l(__s1: [*c]const u8, __s2: [*c]const u8, __n: usize, __loc: locale_t) c_int;
+pub extern fn explicit_bzero(__s: ?*anyopaque, __n: usize) void;
+pub extern fn strsep(noalias __stringp: [*c][*c]u8, noalias __delim: [*c]const u8) [*c]u8;
+pub extern fn strsignal(__sig: c_int) [*c]u8;
+pub extern fn __stpcpy(noalias __dest: [*c]u8, noalias __src: [*c]const u8) [*c]u8;
+pub extern fn stpcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn __stpncpy(noalias __dest: [*c]u8, noalias __src: [*c]const u8, __n: usize) [*c]u8;
+pub extern fn stpncpy(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn mrb_env_unshare(?*mrb_state, ?*struct_REnv, noraise: mrb_bool) mrb_bool;
+pub extern fn mrb_proc_new(?*mrb_state, [*c]const mrb_irep) ?*struct_RProc;
+pub extern fn mrb_proc_new_cfunc(?*mrb_state, mrb_func_t) ?*struct_RProc;
+pub extern fn mrb_closure_new_cfunc(mrb: ?*mrb_state, func: mrb_func_t, nlocals: c_int) ?*struct_RProc;
+pub extern fn mrb_proc_new_cfunc_with_env(mrb: ?*mrb_state, func: mrb_func_t, argc: mrb_int, argv: [*c]const mrb_value) ?*struct_RProc;
+pub extern fn mrb_proc_cfunc_env_get(mrb: ?*mrb_state, idx: mrb_int) mrb_value;
+pub extern fn mrb_load_proc(mrb: ?*mrb_state, proc: ?*const struct_RProc) mrb_value;
+pub extern fn mrb_vm_ci_env_clear(mrb: ?*mrb_state, ci: ?*mrb_callinfo) void;
+pub extern fn mrb_vm_ci_proc_set(ci: ?*mrb_callinfo, p: ?*const struct_RProc) void;
+pub extern fn mrb_vm_ci_target_class(ci: ?*const mrb_callinfo) ?*struct_RClass;
+pub extern fn mrb_vm_ci_target_class_set(ci: ?*mrb_callinfo, tc: ?*struct_RClass) void;
+pub extern fn mrb_vm_ci_env(ci: ?*const mrb_callinfo) ?*struct_REnv;
+pub extern fn mrb_vm_ci_env_set(ci: ?*mrb_callinfo, e: ?*struct_REnv) void;
 pub const mrb_digitmap: [*c]const u8 = @extern([*c]const u8, .{
     .name = "mrb_digitmap",
 });
@@ -4204,6 +4281,171 @@ pub const mrb_irep_catch_handler_pack = @compileError("unable to translate macro
 // mruby-3.4.0/build/host/include/mruby/irep.h:133:9
 pub const mrb_irep_catch_handler_unpack = @compileError("unable to translate macro: undefined identifier `bin_to_uint32`");
 // mruby-3.4.0/build/host/include/mruby/irep.h:134:9
+pub const MRUBY_PROC_H = "";
+pub const _STRING_H = @as(c_int, 1);
+pub const _BITS_TYPES_LOCALE_T_H = @as(c_int, 1);
+pub const _BITS_TYPES___LOCALE_T_H = @as(c_int, 1);
+pub const _STRINGS_H = @as(c_int, 1);
+pub const MRB_ENV_SET_LEN = @compileError("unable to translate C expr: expected ')' instead got '='");
+// mruby-3.4.0/build/host/include/mruby/proc.h:34:9
+pub inline fn MRB_ENV_LEN(e: anytype) mrb_int {
+    _ = &e;
+    return @import("std").zig.c_translation.cast(mrb_int, e.*.flags & @as(c_int, 0xff));
+}
+pub const MRB_ENV_CLOSE = @compileError("unable to translate C expr: expected ')' instead got '='");
+// mruby-3.4.0/build/host/include/mruby/proc.h:36:9
+pub inline fn MRB_ENV_ONSTACK_P(e: anytype) @TypeOf(e.*.cxt != NULL) {
+    _ = &e;
+    return e.*.cxt != NULL;
+}
+pub inline fn MRB_ENV_BIDX(e: anytype) @TypeOf((e.*.flags >> @as(c_int, 8)) & @as(c_int, 0xff)) {
+    _ = &e;
+    return (e.*.flags >> @as(c_int, 8)) & @as(c_int, 0xff);
+}
+pub const MRB_ENV_SET_BIDX = @compileError("unable to translate C expr: expected ')' instead got '='");
+// mruby-3.4.0/build/host/include/mruby/proc.h:39:9
+pub inline fn MRB_ASPEC_REQ(a: anytype) @TypeOf((a >> @as(c_int, 18)) & @as(c_int, 0x1f)) {
+    _ = &a;
+    return (a >> @as(c_int, 18)) & @as(c_int, 0x1f);
+}
+pub inline fn MRB_ASPEC_OPT(a: anytype) @TypeOf((a >> @as(c_int, 13)) & @as(c_int, 0x1f)) {
+    _ = &a;
+    return (a >> @as(c_int, 13)) & @as(c_int, 0x1f);
+}
+pub inline fn MRB_ASPEC_REST(a: anytype) @TypeOf((a >> @as(c_int, 12)) & @as(c_int, 0x1)) {
+    _ = &a;
+    return (a >> @as(c_int, 12)) & @as(c_int, 0x1);
+}
+pub inline fn MRB_ASPEC_POST(a: anytype) @TypeOf((a >> @as(c_int, 7)) & @as(c_int, 0x1f)) {
+    _ = &a;
+    return (a >> @as(c_int, 7)) & @as(c_int, 0x1f);
+}
+pub inline fn MRB_ASPEC_KEY(a: anytype) @TypeOf((a >> @as(c_int, 2)) & @as(c_int, 0x1f)) {
+    _ = &a;
+    return (a >> @as(c_int, 2)) & @as(c_int, 0x1f);
+}
+pub inline fn MRB_ASPEC_KDICT(a: anytype) @TypeOf((a >> @as(c_int, 1)) & @as(c_int, 0x1)) {
+    _ = &a;
+    return (a >> @as(c_int, 1)) & @as(c_int, 0x1);
+}
+pub inline fn MRB_ASPEC_BLOCK(a: anytype) @TypeOf(a & @as(c_int, 1)) {
+    _ = &a;
+    return a & @as(c_int, 1);
+}
+pub const MRB_PROC_CFUNC_FL = @as(c_int, 128);
+pub inline fn MRB_PROC_CFUNC_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_CFUNC_FL) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_CFUNC_FL) != @as(c_int, 0);
+}
+pub inline fn MRB_PROC_CFUNC(p: anytype) @TypeOf(p.*.body.func) {
+    _ = &p;
+    return p.*.body.func;
+}
+pub const MRB_PROC_STRICT = @as(c_int, 256);
+pub inline fn MRB_PROC_STRICT_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_STRICT) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_STRICT) != @as(c_int, 0);
+}
+pub const MRB_PROC_ORPHAN = @as(c_int, 512);
+pub inline fn MRB_PROC_ORPHAN_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_ORPHAN) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_ORPHAN) != @as(c_int, 0);
+}
+pub const MRB_PROC_ENVSET = @as(c_int, 1024);
+pub inline fn MRB_PROC_ENV_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_ENVSET) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_ENVSET) != @as(c_int, 0);
+}
+pub inline fn MRB_PROC_ENV(p: anytype) @TypeOf(if (MRB_PROC_ENV_P(p) != 0) p.*.e.env else NULL) {
+    _ = &p;
+    return if (MRB_PROC_ENV_P(p) != 0) p.*.e.env else NULL;
+}
+pub inline fn MRB_PROC_TARGET_CLASS(p: anytype) @TypeOf(if (MRB_PROC_ENV_P(p) != 0) p.*.e.env.*.c else p.*.e.target_class) {
+    _ = &p;
+    return if (MRB_PROC_ENV_P(p) != 0) p.*.e.env.*.c else p.*.e.target_class;
+}
+pub const MRB_PROC_SET_TARGET_CLASS = @compileError("unable to translate macro: undefined identifier `mrb`");
+// mruby-3.4.0/build/host/include/mruby/proc.h:83:9
+pub const MRB_PROC_SCOPE = @as(c_int, 2048);
+pub inline fn MRB_PROC_SCOPE_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_SCOPE) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_SCOPE) != @as(c_int, 0);
+}
+pub const MRB_PROC_NOARG = @as(c_int, 4096);
+pub inline fn MRB_PROC_NOARG_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_NOARG) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_NOARG) != @as(c_int, 0);
+}
+pub const MRB_PROC_ALIAS = @as(c_int, 8192);
+pub inline fn MRB_PROC_ALIAS_P(p: anytype) @TypeOf((p.*.flags & MRB_PROC_ALIAS) != @as(c_int, 0)) {
+    _ = &p;
+    return (p.*.flags & MRB_PROC_ALIAS) != @as(c_int, 0);
+}
+pub inline fn mrb_proc_ptr(v: anytype) [*c]struct_RProc {
+    _ = &v;
+    return @import("std").zig.c_translation.cast([*c]struct_RProc, mrb_ptr(v));
+}
+pub inline fn mrb_cfunc_env_get(mrb: anytype, idx: anytype) @TypeOf(mrb_proc_cfunc_env_get(mrb, idx)) {
+    _ = &mrb;
+    _ = &idx;
+    return mrb_proc_cfunc_env_get(mrb, idx);
+}
+pub const MRB_METHOD_FUNC_FL = @as(c_int, 8);
+pub const MRB_METHOD_NOARG_FL = @as(c_int, 4);
+pub const MRB_METHOD_PUBLIC_FL = @as(c_int, 0);
+pub const MRB_METHOD_PRIVATE_FL = @as(c_int, 1);
+pub const MRB_METHOD_PROTECTED_FL = @as(c_int, 2);
+pub const MRB_METHOD_VDEFAULT_FL = @as(c_int, 3);
+pub const MRB_METHOD_VISIBILITY_MASK = @as(c_int, 3);
+pub inline fn MRB_METHOD_FUNC_P(m: anytype) @TypeOf(m.flags & MRB_METHOD_FUNC_FL) {
+    _ = &m;
+    return m.flags & MRB_METHOD_FUNC_FL;
+}
+pub inline fn MRB_METHOD_NOARG_P(m: anytype) @TypeOf(if ((m.flags & MRB_METHOD_NOARG_FL) != 0) @as(c_int, 1) else @as(c_int, 0)) {
+    _ = &m;
+    return if ((m.flags & MRB_METHOD_NOARG_FL) != 0) @as(c_int, 1) else @as(c_int, 0);
+}
+pub inline fn MRB_METHOD_FUNC(m: anytype) @TypeOf(m.as.func) {
+    _ = &m;
+    return m.as.func;
+}
+pub const MRB_METHOD_NOARG_SET = @compileError("unable to translate C expr: unexpected token 'do'");
+// mruby-3.4.0/build/host/include/mruby/proc.h:123:9
+pub const MRB_METHOD_FROM_FUNC = @compileError("unable to translate C expr: unexpected token 'do'");
+// mruby-3.4.0/build/host/include/mruby/proc.h:124:9
+pub const MRB_METHOD_FROM_PROC = @compileError("unable to translate C expr: unexpected token 'do'");
+// mruby-3.4.0/build/host/include/mruby/proc.h:125:9
+pub inline fn MRB_METHOD_PROC_P(m: anytype) @TypeOf(!(MRB_METHOD_FUNC_P(m) != 0)) {
+    _ = &m;
+    return !(MRB_METHOD_FUNC_P(m) != 0);
+}
+pub inline fn MRB_METHOD_PROC(m: anytype) @TypeOf(m.as.proc) {
+    _ = &m;
+    return m.as.proc;
+}
+pub inline fn MRB_METHOD_UNDEF_P(m: anytype) @TypeOf(m.as.proc == NULL) {
+    _ = &m;
+    return m.as.proc == NULL;
+}
+pub inline fn MRB_METHOD_VISIBILITY(m: anytype) @TypeOf(m.flags & MRB_METHOD_VISIBILITY_MASK) {
+    _ = &m;
+    return m.flags & MRB_METHOD_VISIBILITY_MASK;
+}
+pub const MRB_SET_VISIBILITY = @compileError("unable to translate C expr: expected ')' instead got '='");
+// mruby-3.4.0/build/host/include/mruby/proc.h:130:9
+pub inline fn MRB_METHOD_SET_VISIBILITY(m: anytype, v: anytype) @TypeOf(MRB_SET_VISIBILITY(m.flags, v)) {
+    _ = &m;
+    _ = &v;
+    return MRB_SET_VISIBILITY(m.flags, v);
+}
+pub inline fn MRB_METHOD_CFUNC_P(m: anytype) @TypeOf((MRB_METHOD_FUNC_P(m) != 0) or ((if (MRB_METHOD_PROC(m) != 0) MRB_PROC_CFUNC_P(MRB_METHOD_PROC(m)) else FALSE) != 0)) {
+    _ = &m;
+    return (MRB_METHOD_FUNC_P(m) != 0) or ((if (MRB_METHOD_PROC(m) != 0) MRB_PROC_CFUNC_P(MRB_METHOD_PROC(m)) else FALSE) != 0);
+}
+pub inline fn MRB_METHOD_CFUNC(m: anytype) @TypeOf(if (MRB_METHOD_FUNC_P(m) != 0) MRB_METHOD_FUNC(m) else MRB_PROC_CFUNC(MRB_METHOD_PROC(m))) {
+    _ = &m;
+    return if (MRB_METHOD_FUNC_P(m) != 0) MRB_METHOD_FUNC(m) else MRB_PROC_CFUNC(MRB_METHOD_PROC(m));
+}
 pub const MRUBY_STRING_H = "";
 pub const RSTRING_EMBED_LEN_MAX = @import("std").zig.c_translation.cast(mrb_int, (((@import("std").zig.c_translation.sizeof(?*anyopaque) * @as(c_int, 3)) + @import("std").zig.c_translation.sizeof(?*anyopaque)) - @import("std").zig.c_translation.MacroArithmetic.div(@as(c_int, 32), CHAR_BIT)) - @as(c_int, 1));
 pub const RSTR_SET_TYPE = @compileError("unable to translate macro: undefined identifier `MRB_STR_`");
@@ -4346,8 +4588,11 @@ pub inline fn mrb_string_value_len(mrb: anytype, str: anytype) @TypeOf(RSTRING_L
     _ = &str;
     return RSTRING_LEN(str);
 }
-pub const mrb_str_strlen = @compileError("unable to translate macro: undefined identifier `strlen`");
-// mruby-3.4.0/build/host/include/mruby/string.h:333:9
+pub inline fn mrb_str_strlen(mrb: anytype, s: anytype) @TypeOf(strlen(RSTR_PTR(s))) {
+    _ = &mrb;
+    _ = &s;
+    return strlen(RSTR_PTR(s));
+}
 pub inline fn mrb_str_to_inum(mrb: anytype, str: anytype, base: anytype, badcheck: anytype) @TypeOf(mrb_str_to_integer(mrb, str, base, badcheck)) {
     _ = &mrb;
     _ = &str;
@@ -4429,4 +4674,5 @@ pub const irep_pool_type = enum_irep_pool_type;
 pub const mrb_catch_type = enum_mrb_catch_type;
 pub const mrb_irep_catch_handler = struct_mrb_irep_catch_handler;
 pub const mrb_insn_data = struct_mrb_insn_data;
+pub const __locale_struct = struct___locale_struct;
 pub const RStringEmbed = struct_RStringEmbed;

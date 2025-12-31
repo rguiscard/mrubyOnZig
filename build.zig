@@ -29,8 +29,8 @@ pub fn build(b: *std.Build) void {
     });
 
     const mrb_c = mrbc.addPrefixedOutputFileArg("-o", "main.c");
-//    mrbc.addFileArg(b.path("src/main.rb"));
-    mrbc.addFileArg(b.path("src/fiber_ping.rb"));
+    mrbc.addFileArg(b.path("src/main.rb"));
+//    mrbc.addFileArg(b.path("src/fiber_ping.rb"));
 
     // This creates a module, which represents a collection of source files alongside
     // some compilation options, such as optimization mode and linked system libraries.
