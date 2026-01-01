@@ -50,7 +50,15 @@ pub fn build(b: *std.Build) void {
         // Later on we'll use this module as the root module of a test executable
         // which requires us to specify a target.
         .target = target,
+        .link_libc = true,
     });
+    mod.addCSourceFile(.{
+        .file = mrb_c,
+        .flags = &.{},
+    });
+
+    mod.addIncludePath(b.path(mruby_path++"include/"));
+    mod.addObjectFile(b.path(mruby_path++"lib/libmruby.a"));
 
     // Here we define an executable. An executable needs to have a root module
     // which needs to expose a `main` function. While we could add a main function
@@ -93,16 +101,6 @@ pub fn build(b: *std.Build) void {
             },
         }),
     });
-
-    exe.addCSourceFile(.{
-        .file = mrb_c,
-        .flags = &.{},
-    });
-
-    exe.addIncludePath(b.path(mruby_path++"include/"));
-    exe.addObjectFile(b.path(mruby_path++"lib/libmruby.a"));
-    exe.linkLibC();
-    exe.step.dependOn(&mrbc.step);
 
     // This declares intent for the executable to be installed into the
     // install prefix when running `zig build` (i.e. when executing the default

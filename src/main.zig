@@ -2,10 +2,6 @@ const std = @import("std");
 const mrubyOnZig = @import("mrubyOnZig");
 const c = mrubyOnZig.c;
 
-export var edata: u8 = 0;
-export var end: u8 = 0;
-export var etext: u8 = 0;
-
 pub fn main() !void {
     const mrb = c.mrb_open();
     if (mrb) |m| {
@@ -24,21 +20,25 @@ pub fn main() !void {
 const MValue = struct {
     value: c.mrb_value,
 
-    fn tap(self: *@This()) *@This() {
-        return self;
-    }
-
-    fn plus_one(self: *@This()) *@This() {
-        const v = c.mrb_fixnum(self.value);
-        self.value = c.mrb_fixnum_value(v+1);
-        return self;
+    fn apply(self: *MValue, func:*const fn (self:*MValue) *MValue) *MValue {
+        return func(self);
     }
 };
 
+fn tap(self: *MValue) *MValue {
+    return self;
+}
+
+fn plus_one(self: *MValue) *MValue {
+    const v = c.mrb_fixnum(self.value);
+    self.value = c.mrb_fixnum_value(v+1);
+    return self;
+}
+
 fn monads_test(mrb: *c.mrb_state) void {
     var one:MValue = .{.value = c.mrb_fixnum_value(1)};
-    const result = one.tap().plus_one();
-//    const result = one.tap();
+//    const result = one.tap().plus_one();
+    const result = one.apply(tap).apply(plus_one);
     std.debug.print("=== Monads test ===\n", .{});
     _ = c.mrb_funcall(mrb, c.mrb_top_self(mrb), "puts", 1, result.value);
 }

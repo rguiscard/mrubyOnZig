@@ -2,6 +2,10 @@
 const std = @import("std");
 pub const c = @import("mruby_h.zig");
 
+export var edata: u8 = 0;
+export var end: u8 = 0;
+export var etext: u8 = 0;
+
 pub fn bufferedPrint() !void {
     // Stdout is for the actual output of your application, for example if you
     // are implementing gzip, then only the compressed bytes should be sent to
