@@ -11,6 +11,7 @@ This is an attempt to write the main program in mruby and compile it by zig to b
 - Download [mruby](https://mruby.org/). It is currently version 3.4.0.
 - Unzip and run `rake test all` to generate headers (mruby.h) and library (libmruby.a) at `mruby-3.4.0/build/host/`.
 
+You may need to use `CC="zig cc" rake test all` if there are errors on C macros.
 You can customize the mruby under `build_config` and gembox under `mrbgems`.
 
 ### 2. Translate mruby headers
